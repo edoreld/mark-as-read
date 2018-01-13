@@ -6,12 +6,9 @@ Born out of my own need to keep track of appartment listings when looking to ren
 
 ## How to Install
 
-Grab the latest release from the releases page, unzip it and then follow these instructions<sup>[[1]]</sup>:
+Get the extension from the Chrome Web Store:
 
-1. Visit chrome://extensions 
-2. Enable Developer mode by ticking the checkbox in the upper-right corner.
-3. Click on the "Load unpacked extension..." button.
-4. Select the directory you just unzipped. 
+https://chrome.google.com/webstore/detail/mark-as-read/hiflhkmicfagennabmnfcnnlpkmidfjj?hl=en-US&gl=FR
 
 ## How to Use
 
