@@ -4,6 +4,8 @@ Imagine every website was an item in a todo list. This extension allows you to t
 
 Born out of my own need to keep track of appartment listings when looking to rent a house. 
 
+Works only if using a single Chrome windows.
+
 ## How to Install
 
 Grab the latest release from the releases page, unzip it and then follow these instructions<sup>[[1]]</sup>:
@@ -12,8 +14,6 @@ Grab the latest release from the releases page, unzip it and then follow these i
 2. Enable Developer mode by ticking the checkbox in the upper-right corner.
 3. Click on the "Load unpacked extension..." button.
 4. Select the directory you just unzipped. 
-
- -> The extension will not work as intended if two windows are open side by side.
 
 ## How to Use
 
