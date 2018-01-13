@@ -52,6 +52,17 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 	});
 });
 
+chrome.tabs.onUpdated.addListener(function callback(activeInfo) {
+	// console.log("onActivated");
+	chrome.tabs.getSelected(null, function(tab){
+		if (visited[tab.url] == undefined || visited[tab.url] == false) {
+			markAsNotVisited();
+		} else { 
+			markAsVisited();
+		}
+	});
+});
+
 function updateRemoteDictionary() {	
 	chrome.storage.sync.set({"visited": visited}, function() {
 		if (chrome.runtime.error) {
