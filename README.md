@@ -6,7 +6,7 @@ Born out of my own need to keep track of appartment listings when looking to ren
 
 ## How to Install
 
-Get the extension [from the Chrome Web Store](https://chrome.google.com/webstore/detail/mark-as-read/hiflhkmicfagennabmnfcnnlpkmidfjj):
+Get the extension [from the Chrome Web Store](https://chrome.google.com/webstore/detail/mark-as-read/hiflhkmicfagennabmnfcnnlpkmidfjj).
 
 ## How to Use
 
