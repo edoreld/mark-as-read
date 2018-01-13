@@ -13,6 +13,8 @@ Grab the latest release from the releases page, unzip it and then follow these i
 3. Click on the "Load unpacked extension..." button.
 4. Select the directory you just unzipped. 
 
+ -> The extension will not work as intended if two windows are open side by side.
+
 ## How to Use
 
 Notice the new icon on the Chrome toolbar. 
