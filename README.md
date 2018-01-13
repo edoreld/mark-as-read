@@ -4,6 +4,8 @@ Imagine every website was an item in a todo list. This extension allows you to t
 
 Born out of my own need to keep track of appartment listings when looking to rent a house. 
 
+Works only if using a single Chrome window.
+
 ## How to Install
 
 Grab the latest release from the releases page, unzip it and then follow these instructions<sup>[[1]]</sup>:
