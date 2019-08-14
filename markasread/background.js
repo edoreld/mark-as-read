@@ -1,18 +1,18 @@
 chrome.runtime.onInstalled.addListener(function () {
-	console.log("onInstalled");
+	// console.log("onInstalled");
 	chrome.storage.sync.get("visited", function (obj) {
 		if (obj["visited"] == undefined) {
-			console.log("obj undefined");
+			// console.log("obj undefined");
 			visited = {};
 		} else {
-			console.log("obj defined");
+			// console.log("obj defined");
 			visited = obj["visited"];
 		}
 	});
 })
 
 chrome.runtime.onStartup.addListener(function () {
-	console.log("onStartup");
+	// console.log("onStartup");
 	visited = {};
 	chrome.storage.sync.get("visited", function (obj) {
 		if (obj["visited"] == undefined) {
@@ -39,7 +39,7 @@ chrome.runtime.onStartup.addListener(function () {
 
 chrome.browserAction.onClicked.addListener(function(tabs) { 
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
-		console.log(tab[0].url);
+		// console.log(tab[0].url);
 		if (visited[tab[0].url] == undefined || visited[tab[0].url] == false) {
 			visited[tab[0].url] = true;
 			markAsVisited(tab[0].id);
@@ -55,7 +55,7 @@ chrome.browserAction.onClicked.addListener(function(tabs) {
 * first time being loaded, and if so we mark it as not visited
 */
 chrome.tabs.onActivated.addListener(function callback(activeInfo) {
-	console.log("onActivated");
+	// console.log("onActivated");
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
 		console.log(tab[0].url);
 		if (visited[tab[0].url] == undefined || visited[tab[0].url] == false) {
@@ -67,7 +67,7 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 });
 
 chrome.tabs.onUpdated.addListener(function callback(activeInfo) {
-	console.log("onActivated");
+	// console.log("onActivated");
 	chrome.tabs.getSelected(null, function(tab){
 		if (visited[tab.url] == undefined || visited[tab.url] == false) {
 			markAsNotVisited();
@@ -87,13 +87,13 @@ function updateRemoteDictionary() {
 }
 
 function markAsNotVisited(atabId) {
-	console.log("markAsNotVisited");
+	// console.log("markAsNotVisited");
 	chrome.browserAction.setIcon({path: "notvisited.png", tabId: atabId});
 	updateRemoteDictionary();
 }
 
 function markAsVisited(atabId) {
-	console.log("markAsVisited");
+	// console.log("markAsVisited");
 	chrome.browserAction.setIcon({path: "visited.png", tabId: atabId });
 	updateRemoteDictionary();
 }
