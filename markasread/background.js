@@ -109,3 +109,10 @@ function markAsVisited(atabId) {
 // 			storageChange.newValue);
 // 	}
 // });
+
+chrome.runtime.onMessage.addListener(function (msg) {
+    if (msg.action === 'import') {
+		visited = {...visited, ...msg.data.visited};
+		updateRemoteDictionary();
+    }
+});

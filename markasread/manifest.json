@@ -11,8 +11,8 @@
   "background": {
     "scripts": ["background.js"]
   },
-
-  "permissions": ["tabs", "storage"]
+  "permissions": ["tabs", "storage", "downloads"],
+  "options_page": "options.html"
 }
 
 
