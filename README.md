@@ -8,6 +8,14 @@ Born out of my own need to keep track of appartment listings when looking to ren
 
 Get the extension [from the Chrome Web Store](https://chrome.google.com/webstore/detail/mark-as-read/hiflhkmicfagennabmnfcnnlpkmidfjj).
 
+## Features
+
+- Mark pages as read
+- Highlight visited links
+- Change Color of Visited Links
+- Export your pages and share with your friends
+- Backup
+
 ## How to Use
 
 Notice the new icon on the Chrome toolbar. 
@@ -22,10 +30,24 @@ The extension will remember the "tick off state" for each page you visit and wil
 
 If you click on the extension icon, it will change from unchecked to checked or viceversa.
 
+### Screenshots
+
+Options
+
+<img src="screenshots/options.png?raw=true" width="404">
+
+Blue Link
+
+<img src="screenshots/blue-link.png?raw=true" width="300">
+
+Red Link
+
+<img src="screenshots/red-link.png?raw=true" width="300">
+
+Pink Link
+
+<img src="screenshots/pink-link.png?raw=true" width="300">
+
 That's all.
 
-
 [1]: https://stackoverflow.com/questions/24577024/install-chrome-extension-not-in-the-store
-
-
-
