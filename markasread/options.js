@@ -21,7 +21,12 @@ function upload() {
 	upload.value = '';
 }
 
+function openDialog() {
+	document.getElementById('upload').click();
+}
+
 document.addEventListener('DOMContentLoaded', function() {
 	document.getElementById("download").addEventListener("click", download);
 	document.getElementById('upload').addEventListener("change", upload, false);	
+	document.getElementById("import").addEventListener('click', openDialog);
 }, false);
