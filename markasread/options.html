@@ -7,6 +7,21 @@
 	<body>
 		<h1>Mark As Read</h1>
 		<section>
+			<h3>Change Color of Visited Links</h3>
+			<div class="row">
+				<label for="changeLinkColor">Enabled</label>
+				<input id="changeLinkColor" type="checkbox" />
+			</div>
+			<div class="row">
+				<label for="linkColor">Link Color</label>
+				<input id="linkColor" type="text"/>
+			</div>
+			<button id="save">Save</button>
+			<button id="restore">Restore Defaults</button>
+			<div id="status"></div>
+		</section>
+		<hr />
+		<section>
 			<h3>Backup</h3>
 			<button id="download">Export</button>
 			<button id="import">Import</button>

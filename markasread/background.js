@@ -1,3 +1,8 @@
+var tcDefaults = {
+	changeLinkColor: false, // default: false
+	linkColor: 'blue' // default: blue
+};
+
 chrome.runtime.onInstalled.addListener(function () {
 	// console.log("onInstalled");
 	chrome.storage.sync.get("visited", function (obj) {
@@ -66,13 +71,16 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 	});
 });
 
-chrome.tabs.onUpdated.addListener(function callback(activeInfo) {
+chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
 	// console.log("onActivated");
 	chrome.tabs.getSelected(null, function(tab){
 		if (visited[tab.url] == undefined || visited[tab.url] == false) {
 			markAsNotVisited();
 		} else { 
 			markAsVisited();
+		}
+		if (info.status === 'complete') {
+			changeLinkColor(tab.id);
 		}
 	});
 });
@@ -116,3 +124,16 @@ chrome.runtime.onMessage.addListener(function (msg) {
 		updateRemoteDictionary();
     }
 });
+
+function changeLinkColor(tabId) {
+	chrome.storage.sync.get(tcDefaults, function(storage) {
+		if(storage.changeLinkColor) {
+			var code = `var linkColor="${storage.linkColor}"; var visited = ${JSON.stringify(visited)}`;
+			chrome.tabs.executeScript(tabId, {
+				code: code
+			}, function() {
+				chrome.tabs.executeScript(tabId, {file: 'changeLinkColor.js'});
+			});	
+		}
+	});
+}
