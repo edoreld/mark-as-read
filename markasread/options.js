@@ -1,11 +1,14 @@
 var tcDefaults = {
 	changeLinkColor: false, // default: false
-	linkColor: 'blue' // default: blue
+	linkColor: 'blue', // default: blue
+	sites: `github.com
+https://bitbucket.org`	
 };
 
 function saveOptions() {
 	var changeLinkColor = document.getElementById("changeLinkColor").checked;
 	var linkColor = document.getElementById("linkColor").value;
+	var sites = document.getElementById("sites").value;
 
 	chrome.storage.sync.remove([
 		"changeLinkColor",
@@ -14,7 +17,8 @@ function saveOptions() {
 	chrome.storage.sync.set(
 		{
 			changeLinkColor: changeLinkColor,
-			linkColor: linkColor
+			linkColor: linkColor,
+			sites: sites
 		},
 		function() {
 			// Update status to let user know options were saved.
@@ -43,6 +47,7 @@ function restoreOptions() {
 	chrome.storage.sync.get(tcDefaults, function(storage) {
 		document.getElementById("changeLinkColor").checked = storage.changeLinkColor;
 		document.getElementById("linkColor").value = storage.linkColor;
+		document.getElementById("sites").value = storage.sites;
 	});
 }
 

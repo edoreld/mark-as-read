@@ -1,6 +1,8 @@
 var tcDefaults = {
 	changeLinkColor: false, // default: false
-	linkColor: 'blue' // default: blue
+	linkColor: 'blue', // default: blue
+	sites: `github.com
+https://bitbucket.org`	
 };
 
 chrome.runtime.onInstalled.addListener(function () {
@@ -80,7 +82,7 @@ chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
 			markAsVisited();
 		}
 		if (info.status === 'complete') {
-			changeLinkColor(tab.id);
+			changeLinkColor(tab);
 		}
 	});
 });
@@ -125,15 +127,17 @@ chrome.runtime.onMessage.addListener(function (msg) {
     }
 });
 
-function changeLinkColor(tabId) {
+function changeLinkColor(tab) {
 	chrome.storage.sync.get(tcDefaults, function(storage) {
 		if(storage.changeLinkColor) {
-			var code = `var linkColor="${storage.linkColor}"; var visited = ${JSON.stringify(visited)}`;
-			chrome.tabs.executeScript(tabId, {
-				code: code
-			}, function() {
-				chrome.tabs.executeScript(tabId, {file: 'changeLinkColor.js'});
-			});	
+			if(storage.sites.split("\n").filter(site => tab.url.includes(site)).length) {
+				var code = `var linkColor="${storage.linkColor}"; var visited = ${JSON.stringify(visited)}`;
+				chrome.tabs.executeScript(tab.id, {
+					code: code
+				}, function() {
+					chrome.tabs.executeScript(tab.id, {file: 'changeLinkColor.js'});
+				});	
+			}
 		}
 	});
 }
