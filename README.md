@@ -8,14 +8,6 @@ Born out of my own need to keep track of appartment listings when looking to ren
 
 Get the extension [from the Chrome Web Store](https://chrome.google.com/webstore/detail/mark-as-read/hiflhkmicfagennabmnfcnnlpkmidfjj).
 
-## Features
-
-- Mark pages as read
-- Highlight visited links
-- Change Color of Visited Links
-- Export your pages and share with your friends
-- Backup
-
 ## How to Use
 
 Notice the new icon on the Chrome toolbar. 
@@ -29,6 +21,12 @@ When you tick it off, the item will look like the following:
 The extension will remember the "tick off state" for each page you visit and will show you the right image when you come back.
 
 If you click on the extension icon, it will change from unchecked to checked or viceversa.
+
+## Features
+
+- Mark pages as read
+- Highlight visited text links
+- Backup and Restore
 
 ### Screenshots
 
