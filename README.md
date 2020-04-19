@@ -45,7 +45,3 @@ Red Link
 Pink Link
 
 <img src="screenshots/pink-link.png?raw=true" width="300">
-
-That's all.
-
-[1]: https://stackoverflow.com/questions/24577024/install-chrome-extension-not-in-the-store
