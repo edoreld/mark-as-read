@@ -30,18 +30,18 @@ If you click on the extension icon, it will change from unchecked to checked or 
 
 ### Screenshots
 
-Options
+<h4>Options</h4>
 
 <img src="screenshots/options.png?raw=true" width="404">
 
-Blue Link
+<h4>Visited Link highlighted as Blue</h4>
 
 <img src="screenshots/blue-link.png?raw=true" width="300">
 
-Red Link
+<h4>Visited Link highlighted as Red</h4>
 
 <img src="screenshots/red-link.png?raw=true" width="300">
 
-Pink Link
+<h4>Visited Link highlighted as Pink</h4>
 
 <img src="screenshots/pink-link.png?raw=true" width="300">
