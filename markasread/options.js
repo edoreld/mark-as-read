@@ -9,12 +9,12 @@ function saveOptions() {
 	var linkColor = document.getElementById("linkColor").value;
 	var sites = document.getElementById("sites").value;
 
-	chrome.storage.sync.remove([
+	chrome.storage.local.remove([
 		"changeLinkColor",
 		"linkColor",
 		"sites"
 	]);
-	chrome.storage.sync.set(
+	chrome.storage.local.set(
 		{
 			changeLinkColor: changeLinkColor || tcDefaults.changeLinkColor,
 			linkColor: linkColor || tcDefaults.linkColor,
@@ -32,7 +32,7 @@ function saveOptions() {
 }
 
 function restoreDefaults() {
-	chrome.storage.sync.set(tcDefaults, function() {
+	chrome.storage.local.set(tcDefaults, function() {
 		restoreOptions();
 		// Update status to let user know options were saved.
 		var status = document.getElementById("status");
@@ -44,7 +44,7 @@ function restoreDefaults() {
 }
 
 function restoreOptions() {
-	chrome.storage.sync.get(tcDefaults, function(storage) {
+	chrome.storage.local.get(tcDefaults, function(storage) {
 		document.getElementById("changeLinkColor").checked = storage.changeLinkColor != tcDefaults.changeLinkColor ? storage.changeLinkColor : false;
 		document.getElementById("linkColor").value = storage.linkColor != tcDefaults.linkColor ? storage.linkColor : "";
 		document.getElementById("sites").value = storage.sites != tcDefaults.sites ? storage.sites : "";
@@ -52,7 +52,7 @@ function restoreOptions() {
 }
 
 function download() {
-	chrome.storage.sync.get("visited", function (obj) {
+	chrome.storage.local.get("visited", function (obj) {
 		var result = JSON.stringify(obj);
 		var url = 'data:application/json;base64,' + btoa(result);
 		chrome.downloads.download({

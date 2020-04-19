@@ -11,7 +11,7 @@
   "background": {
     "scripts": ["background.js"]
   },
-  "permissions": ["activeTab", "tabs", "storage", "downloads", "http://*/", "https://*/"],
+  "permissions": ["activeTab", "tabs", "storage", "downloads", "http://*/", "https://*/", "unlimitedStorage"],
   "content_scripts": [{
     "matches": ["*://*/*"],
     "js": ["changeLinkColor.js"]
