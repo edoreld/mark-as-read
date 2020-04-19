@@ -6,7 +6,7 @@ var tcDefaults = {
 
 chrome.runtime.onInstalled.addListener(function () {
 	// console.log("onInstalled");
-	chrome.storage.sync.get("visited", function (obj) {
+	chrome.storage.local.get("visited", function (obj) {
 		if (obj["visited"] == undefined) {
 			// console.log("obj undefined");
 			visited = {};
@@ -20,7 +20,7 @@ chrome.runtime.onInstalled.addListener(function () {
 chrome.runtime.onStartup.addListener(function () {
 	// console.log("onStartup");
 	visited = {};
-	chrome.storage.sync.get("visited", function (obj) {
+	chrome.storage.local.get("visited", function (obj) {
 		if (obj["visited"] == undefined) {
 			visited = {};
 		} else { 			
@@ -88,7 +88,7 @@ chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
 
 
 function updateRemoteDictionary() {	
-	chrome.storage.sync.set({"visited": visited}, function() {
+	chrome.storage.local.set({"visited": visited}, function() {
 		if (chrome.runtime.error) {
 			console.log("Runtime error.");
 		}
@@ -127,7 +127,7 @@ chrome.runtime.onMessage.addListener(function (msg) {
 });
 
 function changeLinkColor(tab) {
-	chrome.storage.sync.get(tcDefaults, function(storage) {
+	chrome.storage.local.get(tcDefaults, function(storage) {
 		if(storage.changeLinkColor) {
 			if(storage.sites.split("\n").filter(site => tab.url.includes(site)).length) {
 				var code = `var linkColor="${storage.linkColor}"; var visited = ${JSON.stringify(visited)}`;
