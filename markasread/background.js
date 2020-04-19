@@ -1,8 +1,7 @@
 var tcDefaults = {
 	changeLinkColor: false, // default: false
 	linkColor: 'blue', // default: blue
-	sites: `github.com
-https://bitbucket.org`	
+	sites: `https://github.com`	
 };
 
 chrome.runtime.onInstalled.addListener(function () {
