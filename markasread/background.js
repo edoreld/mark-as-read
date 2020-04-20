@@ -1,3 +1,9 @@
+var tcDefaults = {
+	changeLinkColor: false,
+	linkColor: 'blue',
+	sites: `https://github.com`	
+};
+
 chrome.runtime.onInstalled.addListener(function () {
 	// console.log("onInstalled");
 	chrome.storage.sync.get("visited", function (obj) {
@@ -66,13 +72,16 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 	});
 });
 
-chrome.tabs.onUpdated.addListener(function callback(activeInfo) {
+chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
 	// console.log("onActivated");
 	chrome.tabs.getSelected(null, function(tab){
 		if (visited[tab.url] == undefined || visited[tab.url] == false) {
 			markAsNotVisited();
 		} else { 
 			markAsVisited();
+		}
+		if (info.status === 'complete') {
+			changeLinkColor(tab);
 		}
 	});
 });
@@ -109,3 +118,25 @@ function markAsVisited(atabId) {
 // 			storageChange.newValue);
 // 	}
 // });
+
+chrome.runtime.onMessage.addListener(function (msg) {
+    if (msg.action === 'import') {
+		visited = {...visited, ...msg.data.visited};
+		updateRemoteDictionary();
+    }
+});
+
+function changeLinkColor(tab) {
+	chrome.storage.sync.get(tcDefaults, function(storage) {
+		if(storage.changeLinkColor) {
+			if(storage.sites.split("\n").filter(site => tab.url.includes(site)).length) {
+				var code = `var linkColor="${storage.linkColor}"; var visited = ${JSON.stringify(visited)}`;
+				chrome.tabs.executeScript(tab.id, {
+					code: code
+				}, function() {
+					chrome.tabs.executeScript(tab.id, {file: 'changeLinkColor.js'});
+				});	
+			}
+		}
+	});
+}

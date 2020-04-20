@@ -22,10 +22,26 @@ The extension will remember the "tick off state" for each page you visit and wil
 
 If you click on the extension icon, it will change from unchecked to checked or viceversa.
 
-That's all.
+## Features
 
+- Mark pages as read
+- Highlight visited text links
+- Backup and Restore
 
-[1]: https://stackoverflow.com/questions/24577024/install-chrome-extension-not-in-the-store
+### Screenshots
 
+<h4>Options</h4>
 
+<img src="screenshots/options.png?raw=true" width="404">
 
+<h4>Visited Link highlighted as Blue</h4>
+
+<img src="screenshots/blue-link.png?raw=true" width="300">
+
+<h4>Visited Link highlighted as Red</h4>
+
+<img src="screenshots/red-link.png?raw=true" width="300">
+
+<h4>Visited Link highlighted as Pink</h4>
+
+<img src="screenshots/pink-link.png?raw=true" width="300">
