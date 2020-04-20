@@ -49,7 +49,7 @@ function initialise() {
 chrome.browserAction.onClicked.addListener(function(tabs) { 
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
 		// console.log(tab[0].url);
-		if (visited[tab[0].url] == undefined || visited[tab[0].url] == false) {
+		if (notChecked(tab[0].url)) {
 			visited[tab[0].url] = true;
 			markAsVisited(tab[0].id);
 		} else { 
@@ -70,8 +70,8 @@ chrome.browserAction.onClicked.addListener(function(tabs) {
 chrome.tabs.onActivated.addListener(function(activeInfo) {
 	// console.log("onActivated");
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
-		// console.log(tab[0].url);
-		if (visited[tab[0].url] == undefined || visited[tab[0].url] == false) {
+		console.log(tab[0].url);
+		if (notChecked(tab[0].url)) {
 			markAsNotVisited(tab[0].id);
 		} else { 
 			markAsVisited(tab[0].id);
@@ -147,4 +147,8 @@ function changeLinkColor(tab) {
 
 function containsSite(sites, url) {
 	return sites.split("\n").filter(site => url.includes(site)).length;
+}
+
+function notChecked(url) {
+	return visited[url] == undefined || visited[url] == false;
 }
