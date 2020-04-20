@@ -133,7 +133,7 @@ chrome.runtime.onMessage.addListener(function (msg) {
 function changeLinkColor(tab) {
 	chrome.storage.local.get(tcDefaults, function(storage) {
 		if(storage.changeLinkColor) {
-			if(storage.sites.split("\n").filter(site => tab.url.includes(site)).length) {
+			if(containsSite(storage.sites, tab.url)) {
 				var code = `var linkColor="${storage.linkColor}"; var visited = ${JSON.stringify(visited)}`;
 				chrome.tabs.executeScript(tab.id, {
 					code: code
@@ -143,4 +143,8 @@ function changeLinkColor(tab) {
 			}
 		}
 	});
+}
+
+function containsSite(sites, url) {
+	return sites.split("\n").filter(site => url.includes(site)).length;
 }
