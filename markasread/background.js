@@ -6,27 +6,13 @@ var tcDefaults = {
 
 chrome.runtime.onInstalled.addListener(function () {
 	// console.log("onInstalled");
-	chrome.storage.sync.get("visited", function (obj) {
-		if (obj["visited"] == undefined) {
-			// console.log("obj undefined");
-			visited = {};
-		} else {
-			// console.log("obj defined");
-			visited = obj["visited"];
-		}
-	});
+	fetchRemoteDictionary();
 })
 
 chrome.runtime.onStartup.addListener(function () {
 	// console.log("onStartup");
 	visited = {};
-	chrome.storage.sync.get("visited", function (obj) {
-		if (obj["visited"] == undefined) {
-			visited = {};
-		} else { 			
-			visited = obj["visited"];
-		}
-	});
+	fetchRemoteDictionary();
 });
 
 // chrome.browserAction.onClicked.addListener(function(tab) { 
@@ -86,6 +72,16 @@ chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
 	});
 });
 
+
+function fetchRemoteDictionary() {	
+	chrome.storage.sync.get("visited", function (obj) {
+		if (obj["visited"] == undefined) {
+			visited = {};
+		} else { 			
+			visited = obj["visited"];
+		}
+	});
+}
 
 function updateRemoteDictionary() {	
 	chrome.storage.sync.set({"visited": visited}, function() {
