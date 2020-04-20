@@ -26,7 +26,7 @@ If you click on the extension icon, it will change from unchecked to checked or 
 
 - Mark pages as read
 - Highlight visited text links
-- Backup and Restore
+- Import & Export visited links
 
 ### Screenshots
 
