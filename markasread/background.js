@@ -1,6 +1,6 @@
 var tcDefaults = {
-	changeLinkColor: false, // default: false
-	linkColor: 'blue', // default: blue
+	changeLinkColor: false,
+	linkColor: 'blue',
 	sites: `https://github.com`	
 };
 
