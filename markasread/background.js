@@ -32,11 +32,11 @@ chrome.runtime.onStartup.addListener(function () {
 chrome.browserAction.onClicked.addListener(function(tabs) { 
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
 		// console.log(tab[0].url);
-		if (notChecked(tab[0].url)) {
-			visited[tab[0].url] = true;
+		if (!isVisited(tab[0].url)) {
+			addUrl(tab[0].url);
 			markAsVisited(tab[0].id);
-		} else { 
-			visited[tab[0].url] = false;
+		} else {
+			removeUrl(tab[0].url);
 			markAsNotVisited(tab[0].id);
 		}
 	});
@@ -50,7 +50,7 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 	// console.log("onActivated");
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
 		console.log(tab[0].url);
-		if (notChecked(tab[0].url)) {
+		if (!isVisited(tab[0].url)) {
 			markAsNotVisited(tab[0].id);
 		} else { 
 			markAsVisited(tab[0].id);
@@ -61,7 +61,7 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
 	// console.log("onActivated");
 	chrome.tabs.getSelected(null, function(tab){
-		if (notChecked(tab.url)) {
+		if (!isVisited(tab.url)) {
 			markAsNotVisited();
 		} else { 
 			markAsVisited();
@@ -72,13 +72,18 @@ chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
 	});
 });
 
-
 function fetchRemoteDictionary() {	
 	chrome.storage.sync.get("visited", function (obj) {
 		if (obj["visited"] == undefined) {
-			visited = {};
-		} else { 			
-			visited = obj["visited"];
+			visited = {version: 2};
+		} else {
+			var objVisited = obj["visited"];
+			if(objVisited.version == 2) {
+				visited = objVisited;
+			} else {
+				visited = {version: 2};
+				Object.keys(objVisited).forEach(url => addUrl(url));
+			}
 		}
 	});
 }
@@ -117,7 +122,17 @@ function markAsVisited(atabId) {
 
 chrome.runtime.onMessage.addListener(function (msg) {
     if (msg.action === 'import') {
-		visited = {...visited, ...msg.data.visited};
+		var data = msg.data;
+		Object.keys(data)
+			.filter(key => key != 'version')
+			.forEach(
+				key => {
+					data[key]
+						.filter(value => !isVisited(key + value))
+						.forEach(value => addUrl(key + value));
+					
+				}
+			);		
 		updateRemoteDictionary();
     }
 });
@@ -141,6 +156,36 @@ function containsSite(sites, url) {
 	return sites.split("\n").filter(site => url.includes(site)).length;
 }
 
-function notChecked(url) {
-	return visited[url] == undefined || visited[url] == false;
+function removeUrl(url) {
+	var key = getKey(url);
+	var path = url.replace(key, '');
+	const index = visited[key].indexOf(path);
+	if (index > -1) {
+		visited[key].splice(index, 1);
+	}
+}
+
+function isVisited(url) {
+	if(url) {
+		var key = getKey(url);
+		if(visited[key]) {
+			var path = url.replace(key, '');
+			return visited[key].includes(path);
+		}		
+	}
+	return false;
+}
+
+function addUrl(url){
+	var key = getKey(url);
+	var path = url.replace(key, '');
+	if(visited[key]) {
+		visited[key].push(path);
+	} else {
+		visited[key] = [path];
+	}
+}
+
+function getKey(url) {
+	return new URL(url).origin;
 }

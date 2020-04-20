@@ -53,7 +53,7 @@ function restoreOptions() {
 
 function download() {
 	chrome.storage.sync.get("visited", function (obj) {
-		var result = JSON.stringify(obj);
+		var result = JSON.stringify(obj["visited"]);
 		var url = 'data:application/json;base64,' + btoa(result);
 		chrome.downloads.download({
 			url: url,
