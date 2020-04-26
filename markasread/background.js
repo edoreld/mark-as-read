@@ -183,6 +183,9 @@ function removeUrl(url) {
 	if (index > -1) {
 		visited[key].splice(index, 1);
 	}
+	if(!visited[key].length) {
+		delete visited[key];
+	}
 }
 
 function isVisited(url) {
