@@ -15,7 +15,7 @@ chrome.runtime.onInstalled.addListener(function () {
 			visited = obj["visited"];
 		}
 	});
-})
+});
 
 chrome.runtime.onStartup.addListener(function () {
 	// console.log("onStartup");
@@ -55,7 +55,7 @@ chrome.browserAction.onClicked.addListener(function(tabs) {
 		}
 		updateRemoteDictionary();
 	});
-})
+});
 
 /** 
 * Upon switching to a new tab and on it being activated, we check if this is the tab's
