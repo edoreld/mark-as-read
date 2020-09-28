@@ -58,10 +58,13 @@ chrome.browserAction.onClicked.addListener(function(tabs) {
 });
 
 /** 
-* Upon switching to a new tab and on it being activated, we check if this is the tab's
-* first time being loaded, and if so we mark it as not visited
+* Upon switching to a new tab and on it being activated, we set the icon as needed.
+*
+* TODO: decide if it's better to accept that onUpdated may be called 3-4x at once,
+*       or to implement a tabId-specific sempahore on both onActivated and onUpdated
+*       ex: https://stackoverflow.com/questions/56092122/how-to-listen-to-tabs-onupdated-only-and-block-tabs-onactivated
 */
-chrome.tabs.onActivated.addListener(function callback(activeInfo) {
+chrome.tabs.onActivated.addListener(function(activeInfo) {
 	// console.log("onActivated");
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
 		// console.log(tab[0].url);
@@ -73,18 +76,17 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 	});
 });
 
-chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
+chrome.tabs.onUpdated.addListener(function(tabId, changeInfo, tab) {
 	// console.log("onUpdated");
-	chrome.tabs.getSelected(null, function(tab){
-		if (visited[tab.url] == undefined || visited[tab.url] == false) {
-			markAsNotVisited();
-		} else { 
-			markAsVisited();
-		}
-		if (info.status === 'complete') {
-			changeLinkColor(tab);
-		}
-	});
+	if (visited[tab.url] == undefined || visited[tab.url] == false) {
+		markAsNotVisited();
+	}
+	else {
+		markAsVisited();
+	}
+	if (changeInfo.status === 'complete') {
+		changeLinkColor(tab);
+	}
 });
 
 
