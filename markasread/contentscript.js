@@ -1,1 +1,1 @@
-chrome.storage.sync.clear();
+chrome.storage.local.clear();
