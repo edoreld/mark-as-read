@@ -89,7 +89,7 @@ function fetchRemoteDictionary() {
 }
 
 function updateRemoteDictionary() {	
-	chrome.storage.sync.set({"visited": visited}, function() {
+	chrome.storage.local.set({"visited": visited}, function() {
 		if (chrome.runtime.error) {
 			console.log("Runtime error.");
 		}
@@ -138,7 +138,7 @@ chrome.runtime.onMessage.addListener(function (msg) {
 });
 
 function changeLinkColor(tab) {
-	chrome.storage.sync.get(tcDefaults, function(storage) {
+	chrome.storage.local.get(tcDefaults, function(storage) {
 		if(storage.changeLinkColor) {
 			if(containsSite(storage.sites, tab.url)) {
 				var code = `var linkColor="${storage.linkColor}"; var visited = ${JSON.stringify(visited)}`;
