@@ -53,6 +53,7 @@ chrome.browserAction.onClicked.addListener(function(tabs) {
 			visited[tab[0].url] = false;
 			markAsNotVisited(tab[0].id);
 		}
+		updateRemoteDictionary();
 	});
 })
 
@@ -98,13 +99,11 @@ function updateRemoteDictionary() {
 function markAsNotVisited(atabId) {
 	// console.log("markAsNotVisited");
 	chrome.browserAction.setIcon({path: "notvisited.png", tabId: atabId});
-	updateRemoteDictionary();
 }
 
 function markAsVisited(atabId) {
 	// console.log("markAsVisited");
 	chrome.browserAction.setIcon({path: "visited.png", tabId: atabId });
-	updateRemoteDictionary();
 }
 
 // chrome.storage.onChanged.addListener(function(changes, namespace) {
