@@ -74,7 +74,7 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 });
 
 chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
-	// console.log("onActivated");
+	// console.log("onUpdated");
 	chrome.tabs.getSelected(null, function(tab){
 		if (visited[tab.url] == undefined || visited[tab.url] == false) {
 			markAsNotVisited();
