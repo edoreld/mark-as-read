@@ -6,20 +6,15 @@ var tcDefaults = {
 
 chrome.runtime.onInstalled.addListener(function () {
 	// console.log("onInstalled");
-	chrome.storage.local.get("visited", function (obj) {
-		if (obj["visited"] == undefined) {
-			// console.log("obj undefined");
-			visited = {};
-		} else {
-			// console.log("obj defined");
-			visited = obj["visited"];
-		}
-	});
+	initialise();
 });
 
 chrome.runtime.onStartup.addListener(function () {
 	// console.log("onStartup");
-	visited = {};
+	initialise();
+});
+
+function initialise() {
 	chrome.storage.local.get("visited", function (obj) {
 		if (obj["visited"] !== undefined) {
 			visited = obj["visited"];
@@ -34,7 +29,8 @@ chrome.runtime.onStartup.addListener(function () {
 			});
 		}
 	});
-});
+}
+
 
 // chrome.browserAction.onClicked.addListener(function(tab) { 
 // 	console.log("onClicked");
