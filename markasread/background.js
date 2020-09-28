@@ -119,10 +119,10 @@ function markAsVisited(atabId) {
 // });
 
 chrome.runtime.onMessage.addListener(function (msg) {
-    if (msg.action === 'import') {
+	if (msg.action === 'import') {
 		visited = {...visited, ...msg.data.visited};
 		updateRemoteDictionary();
-    }
+	}
 });
 
 function changeLinkColor(tab) {

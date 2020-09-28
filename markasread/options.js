@@ -27,8 +27,8 @@ function saveOptions() {
 			setTimeout(function() {
 				status.textContent = "";
 			}, 1000);
-    }
-  );
+		}
+	);
 }
 
 function restoreDefaults() {
