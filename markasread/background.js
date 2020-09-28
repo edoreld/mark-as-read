@@ -21,10 +21,17 @@ chrome.runtime.onStartup.addListener(function () {
 	// console.log("onStartup");
 	visited = {};
 	chrome.storage.local.get("visited", function (obj) {
-		if (obj["visited"] == undefined) {
-			visited = {};
-		} else { 			
+		if (obj["visited"] !== undefined) {
 			visited = obj["visited"];
+		} else {
+			// attempt to migrate old storage.sync install:
+			chrome.storage.sync.get("visited", function (syncObj) {
+				if (syncObj["visited"] !== undefined) {
+					visited = syncObj["visited"];
+				} else {
+					visited = {};
+				}
+			});
 		}
 	});
 });
