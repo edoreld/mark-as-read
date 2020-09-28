@@ -63,7 +63,7 @@ chrome.browserAction.onClicked.addListener(function(tabs) {
 chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 	// console.log("onActivated");
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
-		console.log(tab[0].url);
+		// console.log(tab[0].url);
 		if (visited[tab[0].url] == undefined || visited[tab[0].url] == false) {
 			markAsNotVisited(tab[0].id);
 		} else { 
