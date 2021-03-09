@@ -1,38 +1,17 @@
-var tcDefaults = {
-	changeLinkColor: false,
-	linkColor: 'blue',
-	sites: `https://github.com`	
-};
-
 chrome.runtime.onInstalled.addListener(function () {
-	// console.log("onInstalled");
-	fetchRemoteDictionary();
+	console.log("onInstalled");
+	fetchMarkData();
 })
 
 chrome.runtime.onStartup.addListener(function () {
-	// console.log("onStartup");
+	console.log("onStartup");
 	visited = {};
-	fetchRemoteDictionary();
+	fetchMarkData();
 });
-
-// chrome.browserAction.onClicked.addListener(function(tab) { 
-// 	console.log("onClicked");
-// 	chrome.tabs.getSelected(null, function(tab){
-// 		if (visited[tab.url] == false || visited[tab.url] == undefined) {
-// 			markAsVisited();
-// 			visited[tab.url] = true;
-			
-// 		} else {
-// 			markAsNotVisited();
-// 			visited[tab.url] = false;
-// 		}
-// 	});
-// });
 
 chrome.browserAction.onClicked.addListener(function(tabs) { 
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
-		// console.log(tab[0].url);
-		if (!isVisited(tab[0].url)) {
+		if (!markedAsRead(tab[0].url)) {
 			addUrl(tab[0].url);
 			markAsVisited(tab[0].id);
 		} else {
@@ -42,15 +21,11 @@ chrome.browserAction.onClicked.addListener(function(tabs) {
 	});
 })
 
-/** 
-* Upon switching to a new tab and on it being activated, we check if this is the tab's
-* first time being loaded, and if so we mark it as not visited
-*/
 chrome.tabs.onActivated.addListener(function callback(activeInfo) {
-	// console.log("onActivated");
+	console.log("onActivated");
 	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
 		console.log(tab[0].url);
-		if (!isVisited(tab[0].url)) {
+		if (!markedAsRead(tab[0].url)) {
 			markAsNotVisited(tab[0].id);
 		} else { 
 			markAsVisited(tab[0].id);
@@ -59,20 +34,30 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 });
 
 chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
-	// console.log("onActivated");
+	console.log("onUpdated");
 	chrome.tabs.getSelected(null, function(tab){
-		if (!isVisited(tab.url)) {
+		if (!markedAsRead(tab.url)) {
 			markAsNotVisited();
 		} else { 
 			markAsVisited();
 		}
-		if (info.status === 'complete') {
-			changeLinkColor(tab);
-		}
 	});
 });
 
-function fetchRemoteDictionary() {	
+chrome.commands.onCommand.addListener(function(command) {
+	console.log("onCommand");
+	chrome.tabs.query({'active': true, 'currentWindow': true}, function (tab) {
+		if (!markedAsRead(tab[0].url)) {
+			addUrl(tab[0].url);
+			markAsVisited(tab[0].id);
+		} else {
+			removeUrl(tab[0].url);
+			markAsNotVisited(tab[0].id);
+		}
+	});
+})
+
+function fetchMarkData() {	
 	chrome.storage.sync.get("visited", function (obj) {
 		if (obj["visited"] == undefined) {
 			visited = {version: 2};
@@ -82,14 +67,16 @@ function fetchRemoteDictionary() {
 				visited = objVisited;
 			} else {
 				visited = {version: 2};
-				Object.keys(objVisited).forEach(url => addUrl(url));
+				Object.keys(objVisited).forEach(
+					url => addUrl(url)
+					);
 			}
 		}
 	});
 }
 
-function updateRemoteDictionary() {	
-	chrome.storage.local.set({"visited": visited}, function() {
+function updateMarkData() {	
+	chrome.storage.sync.set({"visited": visited}, function() {
 		if (chrome.runtime.error) {
 			console.log("Runtime error.");
 		}
@@ -97,28 +84,16 @@ function updateRemoteDictionary() {
 }
 
 function markAsNotVisited(atabId) {
-	// console.log("markAsNotVisited");
+	console.log("markAsNotVisited");
 	chrome.browserAction.setIcon({path: "notvisited.png", tabId: atabId});
-	updateRemoteDictionary();
+	updateMarkData();
 }
 
 function markAsVisited(atabId) {
-	// console.log("markAsVisited");
+	console.log("markAsVisited");
 	chrome.browserAction.setIcon({path: "visited.png", tabId: atabId });
-	updateRemoteDictionary();
+	updateMarkData();
 }
-
-// chrome.storage.onChanged.addListener(function(changes, namespace) {
-// 	for (key in changes) {
-// 		var storageChange = changes[key];
-// 		console.log('Storage key "%s" in namespace "%s" changed. ' +
-// 			'Old value was "%s", new value is "%s".',
-// 			key,
-// 			namespace,
-// 			storageChange.oldValue,
-// 			storageChange.newValue);
-// 	}
-// });
 
 chrome.runtime.onMessage.addListener(function (msg) {
     if (msg.action === 'import') {
@@ -128,38 +103,22 @@ chrome.runtime.onMessage.addListener(function (msg) {
 			.forEach(
 				key => {
 					data[key]
-						.filter(value => !isVisited(key + value))
+						.filter(value => !markedAsRead(key + value))
 						.forEach(value => addUrl(key + value));
-					
 				}
 			);		
-		updateRemoteDictionary();
+		updateMarkData();
     }
 });
 
-function changeLinkColor(tab) {
-	chrome.storage.local.get(tcDefaults, function(storage) {
-		if(storage.changeLinkColor) {
-			if(containsSite(storage.sites, tab.url)) {
-				var code = `var linkColor="${storage.linkColor}"; var visited = ${JSON.stringify(visited)}`;
-				chrome.tabs.executeScript(tab.id, {
-					code: code
-				}, function() {
-					chrome.tabs.executeScript(tab.id, {file: 'changeLinkColor.js'});
-				});	
-			}
-		}
-	});
-}
-
-function containsSite(sites, url) {
-	return sites.split("\n").filter(site => url.includes(site)).length;
-}
-
 function removeUrl(url) {
+	console.log("Remove URL")
 	var key = getKey(url);
+	console.log(`Key ${key}`)
 	var path = url.replace(key, '');
+	console.log(`Path ${path}`)
 	const index = visited[key].indexOf(path);
+	console.log(`Index ${index}`)
 	if (index > -1) {
 		visited[key].splice(index, 1);
 	}
@@ -168,7 +127,7 @@ function removeUrl(url) {
 	}
 }
 
-function isVisited(url) {
+function markedAsRead(url) {
 	if(url) {
 		var key = getKey(url);
 		if(visited[key]) {
@@ -180,8 +139,11 @@ function isVisited(url) {
 }
 
 function addUrl(url){
+	console.log("Add URL")
 	var key = getKey(url);
+	console.log(`Key ${key}`)
 	var path = url.replace(key, '');
+	console.log(`Path ${path}`)
 	if(visited[key]) {
 		visited[key].push(path);
 	} else {

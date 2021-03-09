@@ -8,35 +8,15 @@
 	<body>
 		<h1>Mark As Read</h1>
 		<section>
-			<h3>Change Color of Visited Links</h3>
-			<div class="row">
-				<label for="changeLinkColor">Enabled</label>
-				<input id="changeLinkColor" type="checkbox" />
-			</div>
-			<div class="row">
-				<label for="linkColor">Link Color</label>
-				<input id="linkColor" type="text" placeholder="red, yellow, magenta..." size="20"/>
-				<label type="text" size="20">(default = blue)</label>
-			</div>
-			<div class="row">
-				<label for="sites"
-					>Sites on which extension is enabled<br />
-					(one per line)<br />
-					<br />
-				</label>
-				<textarea id="sites" rows="10" cols="50" placeholder="https://github.com"></textarea>
-				<br />
-				<button id="save">Save</button>
-				<button id="restore">Restore Defaults</button>
-			</div>
-			<div id="status"></div>
-		</section>
-		<hr />
-		<section>
 			<h3>Backup</h3>
 			<button id="download">Export</button>
 			<button id="import">Import</button>
 			<input type="file" id="upload" hidden/>
 		</section>			
+		<section>
+			<h3>Clear</h3>
+			<p>WARNING! This will delete all stored data regarding sites you've visited!</p>
+			<button id="clear">Clear All Stored Data</button>
+		</section>
 	</body>
 </html>
