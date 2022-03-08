@@ -1,7 +1,21 @@
 chrome.runtime.onInstalled.addListener(function() {
     // console.log("onInstalled");
+    chrome.storage.sync.get("visited", function(result) {
+        if (result["visited"] !== undefined) {
+            visited = result["visited"];
+            updateDictionary();
+        }
+    });
     fetchMarkData();
 })
+
+function updateDictionary() {
+    chrome.storage.local.set({ "visited": visited }, function() {
+        if (chrome.runtime.error) {
+            console.log("Runtime error.");
+        }
+    });
+}
 
 chrome.runtime.onStartup.addListener(function() {
     // console.log("onStartup");
@@ -58,7 +72,7 @@ chrome.commands.onCommand.addListener(function(command) {
 })
 
 function fetchMarkData() {
-    chrome.storage.sync.get("visited", function(obj) {
+    chrome.storage.local.get("visited", function(obj) {
         if (obj["visited"] == undefined) {
             visited = { version: 2 };
         } else {
@@ -76,9 +90,9 @@ function fetchMarkData() {
 }
 
 function updateMarkData() {
-    chrome.storage.sync.set({ "visited": visited }, function() {
+    chrome.storage.local.set({ "visited": visited }, function() {
         if (chrome.runtime.error) {
-            // console.log("Runtime error.");
+            console.log("Runtime error.");
         }
     });
 }
