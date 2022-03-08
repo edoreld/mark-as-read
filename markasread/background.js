@@ -1,16 +1,21 @@
-chrome.runtime.onInstalled.addListener(function() {
-    // console.log("onInstalled");
-    chrome.storage.sync.get("visited", function(result) {
-        if (result["visited"] !== undefined) {
-            visited = result["visited"];
-            updateDictionary();
-        }
-    });
+chrome.runtime.onInstalled.addListener(function(details) {
+    if (details.reason == "update") {
+        // console.log("updating");
+        chrome.storage.sync.get("visited", function(result) {
+            // console.log("Sync Result: \n" + JSON.stringify(result, null, 2));
+            if (result["visited"] !== undefined) {
+                visited = result["visited"];
+                updateDictionary(visited);
+            }
+        })
+    }
     fetchMarkData();
 })
 
-function updateDictionary() {
+function updateDictionary(visited) {
+    // console.log("Updating dictionary...");
     chrome.storage.local.set({ "visited": visited }, function() {
+        // console.log("Visited: " + JSON.stringify(visited, null, 2))
         if (chrome.runtime.error) {
             console.log("Runtime error.");
         }
@@ -37,6 +42,7 @@ chrome.browserAction.onClicked.addListener(function(tabs) {
 
 chrome.tabs.onActivated.addListener(function callback(activeInfo) {
     // console.log("onActivated");
+
     chrome.tabs.query({ 'active': true, 'currentWindow': true }, function(tab) {
         // console.log(tab[0].url);
         if (!markedAsRead(tab[0].url)) {
@@ -49,6 +55,7 @@ chrome.tabs.onActivated.addListener(function callback(activeInfo) {
 
 chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
     // console.log("onUpdated");
+
     chrome.tabs.getSelected(null, function(tab) {
         if (!markedAsRead(tab.url)) {
             markAsNotVisited();
@@ -89,24 +96,16 @@ function fetchMarkData() {
     });
 }
 
-function updateMarkData() {
-    chrome.storage.local.set({ "visited": visited }, function() {
-        if (chrome.runtime.error) {
-            console.log("Runtime error.");
-        }
-    });
-}
-
 function markAsNotVisited(atabId) {
     // console.log("markAsNotVisited");
     chrome.browserAction.setIcon({ path: "notvisited.png", tabId: atabId });
-    updateMarkData();
+    updateDictionary();
 }
 
 function markAsVisited(atabId) {
     // console.log("markAsVisited");
     chrome.browserAction.setIcon({ path: "visited.png", tabId: atabId });
-    updateMarkData();
+    updateDictionary();
 }
 
 chrome.runtime.onMessage.addListener(function(msg) {
@@ -121,7 +120,7 @@ chrome.runtime.onMessage.addListener(function(msg) {
                         .forEach(value => addUrl(key + value));
                 }
             );
-        updateMarkData();
+        updateDictionary();
     }
 });
 
