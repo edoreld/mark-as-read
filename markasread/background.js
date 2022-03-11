@@ -1,8 +1,6 @@
 chrome.runtime.onInstalled.addListener(function(details) {
     if (details.reason == "update") {
-        // console.log("updating");
         chrome.storage.sync.get("visited", function(result) {
-            // console.log("Sync Result: \n" + JSON.stringify(result, null, 2));
             if (result["visited"] !== undefined) {
                 visited = result["visited"];
                 updateDictionary(visited);
@@ -13,9 +11,7 @@ chrome.runtime.onInstalled.addListener(function(details) {
 })
 
 function updateDictionary(visited) {
-    // console.log("Updating dictionary...");
     chrome.storage.local.set({ "visited": visited }, function() {
-        // console.log("Visited: " + JSON.stringify(visited, null, 2))
         if (chrome.runtime.error) {
             console.log("Runtime error.");
         }
@@ -23,7 +19,6 @@ function updateDictionary(visited) {
 }
 
 chrome.runtime.onStartup.addListener(function() {
-    // console.log("onStartup");
     visited = {};
     fetchMarkData();
 });
