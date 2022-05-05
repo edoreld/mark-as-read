@@ -1,109 +1,90 @@
-chrome.runtime.onInstalled.addListener(function(details) {
+chrome.runtime.onInstalled.addListener(async function(details) {
     if (details.reason == "update") {
-        chrome.storage.sync.get("visited", function(result) {
-            if (result["visited"] !== undefined) {
-                visited = result["visited"];
-                updateDictionary(visited);
-            }
-        })
+        const result = await fetchAndNormalizeVisitedData()
+        if (result["visited"] !== undefined) {
+            const visited = result["visited"];
+            await saveVisited(visited);
+        }
     }
-    fetchMarkData();
+    fetchAndNormalizeVisitedData();
 })
 
-function updateDictionary(visited) {
-    chrome.storage.local.set({ "visited": visited }, function() {
-        if (chrome.runtime.error) {
-            console.log("Runtime error.");
-        }
-    });
+function saveVisited(visited) {
+    return chrome.storage.local.set({ "visited": visited })
 }
 
 chrome.runtime.onStartup.addListener(function() {
-    visited = {};
-    fetchMarkData();
+    fetchAndNormalizeVisitedData();
 });
 
-chrome.browserAction.onClicked.addListener(function(tabs) {
-    chrome.tabs.query({ 'active': true, 'currentWindow': true }, function(tab) {
-        if (!markedAsRead(tab[0].url)) {
-            addUrl(tab[0].url);
-            markAsVisited(tab[0].id);
-        } else {
-            removeUrl(tab[0].url);
-            markAsNotVisited(tab[0].id);
-        }
-    });
+chrome.action.onClicked.addListener(function() {
+    updateVisitedStatusOfCurrentTab()
 })
 
-chrome.tabs.onActivated.addListener(function callback(activeInfo) {
-    // console.log("onActivated");
-
-    chrome.tabs.query({ 'active': true, 'currentWindow': true }, function(tab) {
-        // console.log(tab[0].url);
-        if (!markedAsRead(tab[0].url)) {
-            markAsNotVisited(tab[0].id);
-        } else {
-            markAsVisited(tab[0].id);
-        }
-    });
+chrome.tabs.onActivated.addListener(function callback() {
+    setTabIconForCurrentTab()
 });
 
-chrome.tabs.onUpdated.addListener(function callback(activeInfo, info) {
-    // console.log("onUpdated");
-
-    chrome.tabs.getSelected(null, function(tab) {
-        if (!markedAsRead(tab.url)) {
-            markAsNotVisited();
-        } else {
-            markAsVisited();
-        }
-    });
+chrome.tabs.onUpdated.addListener(function callback() {
+    setTabIconForCurrentTab()
 });
 
-chrome.commands.onCommand.addListener(function(command) {
-    // console.log("onCommand");
-    chrome.tabs.query({ 'active': true, 'currentWindow': true }, function(tab) {
-        if (!markedAsRead(tab[0].url)) {
-            addUrl(tab[0].url);
-            markAsVisited(tab[0].id);
-        } else {
-            removeUrl(tab[0].url);
-            markAsNotVisited(tab[0].id);
-        }
-    });
+async function setTabIconForCurrentTab() {
+    const tab = await getCurrentTab()
+    const wasVisited = await hasBeenVisited(tab.url)
+    if (!wasVisited) {
+        await setNotVisitedIcon(tab.id);
+    } else {
+        await setVisitedIcon(tab.id);
+    }
+}
+
+function getCurrentTab() {
+    return chrome.tabs.query({active: true, currentWindow: true}).then(tabs => tabs[0])
+}
+
+chrome.commands.onCommand.addListener(function() {
+    updateVisitedStatusOfCurrentTab()
 })
 
-function fetchMarkData() {
-    chrome.storage.local.get("visited", function(obj) {
-        if (obj["visited"] == undefined) {
-            visited = { version: 2 };
-        } else {
-            var objVisited = obj["visited"];
-            if (objVisited.version == 2) {
-                visited = objVisited;
-            } else {
-                visited = { version: 2 };
-                Object.keys(objVisited).forEach(
-                    url => addUrl(url)
-                );
-            }
+async function updateVisitedStatusOfCurrentTab() {
+    const tab = await getCurrentTab()
+    let previouslyVisited = await hasBeenVisited(tab.url)
+    if (!previouslyVisited) {
+        await addUrl(tab.url)
+        await setVisitedIcon(tab.id)
+    } else {
+        await removeUrl(tab.url)
+        await setNotVisitedIcon(tab.id)
+    }
+}
+
+async function fetchAndNormalizeVisitedData() {
+    const obj = await chrome.storage.local.get("visited")
+    if (obj["visited"] == undefined) {
+        await saveVisited({visited: { version: 2 }})
+    } else {
+        var visited = obj["visited"];
+        if (visited.version != 2) {
+            Object.keys(visited).forEach(async url => { await addUrl(url) });
+            let obj = await chrome.storage.local.get("visited")
+            visited = obj["visited"]
+            visited.version = 2
+            await saveVisited(visited)
         }
-    });
+    }
+    return chrome.storage.local.get("visited")
 }
 
-function markAsNotVisited(atabId) {
-    // console.log("markAsNotVisited");
-    chrome.browserAction.setIcon({ path: "notvisited.png", tabId: atabId });
-    updateDictionary();
+function setNotVisitedIcon(tabId) {
+    return chrome.action.setIcon({ path: "images/notvisited.png", tabId: tabId });
 }
 
-function markAsVisited(atabId) {
-    // console.log("markAsVisited");
-    chrome.browserAction.setIcon({ path: "visited.png", tabId: atabId });
-    updateDictionary();
+function setVisitedIcon(tabId) {
+    return chrome.action.setIcon({ path: "images/visited.png", tabId: tabId });
 }
 
-chrome.runtime.onMessage.addListener(function(msg) {
+chrome.runtime.onMessage.addListener(async function(msg) {
     if (msg.action === 'import') {
         var data = msg.data;
         Object.keys(data)
@@ -111,52 +92,59 @@ chrome.runtime.onMessage.addListener(function(msg) {
             .forEach(
                 key => {
                     data[key]
-                        .filter(value => !markedAsRead(key + value))
-                        .forEach(value => addUrl(key + value));
+                        .filter(async value =>  !await hasBeenVisited(key + value))
+                        .forEach(async value => await addUrl(key + value));
                 }
             );
-        updateDictionary();
     }
 });
 
-function removeUrl(url) {
+async function removeUrl(url) {
     // console.log("Remove URL")
     var key = getKey(url);
     // console.log(`Key ${key}`)
     var path = url.replace(key, '');
-    // console.log(`Path ${path}`)
-    const index = visited[key].indexOf(path);
+    const obj = await fetchAndNormalizeVisitedData()
     // console.log(`Index ${index}`)
+    // console.log(`Path ${path}`)
+    const visited = obj["visited"]
+    const index = visited[key].indexOf(path);
     if (index > -1) {
         visited[key].splice(index, 1);
     }
     if (!visited[key].length) {
         delete visited[key];
     }
+    await saveVisited(visited)
 }
 
-function markedAsRead(url) {
+async function hasBeenVisited(url) {
     if (url) {
         var key = getKey(url);
-        if (visited[key]) {
+        const obj = await fetchAndNormalizeVisitedData()
+        const visited = obj["visited"]
+        if (visited?.[key]) {
             var path = url.replace(key, '');
             return visited[key].includes(path);
         }
     }
-    return false;
+    return false
 }
 
-function addUrl(url) {
+async function addUrl(url) {
     // console.log("Add URL")
     var key = getKey(url);
     // console.log(`Key ${key}`)
     var path = url.replace(key, '');
     // console.log(`Path ${path}`)
+    const obj = await fetchAndNormalizeVisitedData()
+    const visited = obj["visited"]
     if (visited[key]) {
         visited[key].push(path);
     } else {
         visited[key] = [path];
     }
+    await saveVisited(visited)
 }
 
 function getKey(url) {

@@ -1,0 +1,7 @@
+{
+  "name": "mark-as-read",
+  "devDependencies": {
+    "@types/chrome": "^0.0.184",
+    "eslint": "^8.14.0"
+  }
+}
