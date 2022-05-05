@@ -1,6 +1,6 @@
 chrome.runtime.onInstalled.addListener(async function(details) {
     if (details.reason == "update") {
-        const result = await fetchAndNormalizeVisitedData()
+        const result = await chrome.storage.sync.get("visited")
         if (result["visited"] !== undefined) {
             const visited = result["visited"];
             await saveVisited(visited);
@@ -62,7 +62,7 @@ async function updateVisitedStatusOfCurrentTab() {
 async function fetchAndNormalizeVisitedData() {
     const obj = await chrome.storage.local.get("visited")
     if (obj["visited"] == undefined) {
-        await saveVisited({visited: { version: 2 }})
+        await saveVisited({ version: 2 })
     } else {
         var visited = obj["visited"];
         if (visited.version != 2) {
