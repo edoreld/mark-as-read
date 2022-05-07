@@ -1,4 +1,6 @@
-chrome.runtime.onInstalled.addListener(function(details) {
+import { tcDefaults } from "./defaults.js"
+
+chrome.runtime.onInstalled.addListener(async function(details) {
     fetchMarkData();
 })
 
@@ -37,7 +39,7 @@ chrome.tabs.onActivated.addListener(async function callback() {
     }
 });
 
-chrome.tabs.onUpdated.addListener(async function callback() {
+chrome.tabs.onUpdated.addListener(async function callback(activeInfo, info) {
         // console.log("onUpdated");
 
     const tabs = await chrome.tabs.query({active: true, currentWindow: true})
@@ -45,6 +47,9 @@ chrome.tabs.onUpdated.addListener(async function callback() {
         await markAsNotVisited(tabs[0].id);
     } else {
         await markAsVisited(tabs[0].id);
+    }
+    if (info.status === 'complete') {
+        changeLinkColor(tabs[0]);
     }
 });
 
@@ -156,4 +161,45 @@ async function addUrl(url) {
 
 function getKey(url) {
     return new URL(url).origin;
+}
+
+async function changeLinkColor(tab) {
+	const storage = await chrome.storage.local.get(tcDefaults)
+	const visitedObj = await fetchMarkData()
+	const visited = visitedObj["visited"]
+    if(storage.changeLinkColor) {
+        if(containsSite(storage.sites, tab.url)) {
+            // Retrieves links from DOM
+            const links = await chrome.tabs.sendMessage(
+                tab.id, 
+                { action: "get_links" }
+            );  
+            // Finds visited links
+            const visitedLinks = links.filter(link => isVisited(link, visited))
+            // Sends list of visited links to content script to update the color.
+            chrome.tabs.sendMessage(
+                tab.id, 
+                { 
+                    action: "change_link_color", 
+                    links: visitedLinks,
+                    linkColor: storage.linkColor
+                }
+            )
+        }
+    }
+}
+
+function isVisited(url, visited) {
+	if(url) {
+		var key = getKey(url);
+		if(visited?.[key]) {
+			var path = url.replace(key, '');
+			return visited[key].includes(path);
+		}		
+	}
+	return false;
+}
+
+function containsSite(sites, url) {
+	return sites.split("\n").filter(site => url.includes(site)).length;
 }

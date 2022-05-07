@@ -10,8 +10,9 @@
             "16": "icon_16.png"
         }
     },
-    "background": {
-        "service_worker": "background.js"
+    "background": { 
+        "service_worker":  "background.js",
+         "type": "module" 
     },
     "commands": {
         "mark_page": {
@@ -31,7 +32,18 @@
         "tabs",
         "storage",
         "downloads",
-        "unlimitedStorage"
+        "unlimitedStorage",
+        "scripting"
     ],
+    "host_permissions": [
+        "http://*/", 
+        "https://*/"
+    ],
+    "content_scripts": [{
+        "matches": ["*://*/*"],
+        "js": [
+            "changeLinkColor.js"
+        ]
+      }],
     "options_page": "options.html"
 }
