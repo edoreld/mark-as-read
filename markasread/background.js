@@ -75,7 +75,9 @@ async function fetchMarkData() {
     } else {
         var objVisited = obj["visited"];
         if (objVisited.version != 2) {
-            Object.keys(objVisited).forEach(async url => { await addUrl(url) });
+            for (const url of Object.keys(objVisited)) {
+                await addUrl(url)
+            }
             let obj = await chrome.storage.local.get("visited")
             objVisited = obj["visited"]
             objVisited.version = 2
@@ -98,15 +100,16 @@ function markAsVisited(atabId) {
 chrome.runtime.onMessage.addListener(async function(msg) {
     if (msg.action === 'import') {
         var data = msg.data;
-        Object.keys(data)
-            .filter(key => key != 'version')
-            .forEach(
-                key => {
-                    data[key]
-                        .filter(async value =>  !await markedAsRead(key + value))
-                        .forEach(async value => await addUrl(key + value));
+
+        // filter/map/forEach do not support async/await, hence the usage of "for"
+        const keys = Object.keys(data).filter(key => key != 'version')
+        for (const key of keys) {
+            for (const value of data[key]) {
+                if (!await markedAsRead(key + value)) {
+                    await addUrl(key + value)
                 }
-            );
+            }
+        }
     }
 });
 
