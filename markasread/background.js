@@ -1,6 +1,6 @@
 import { tcDefaults } from "./defaults.js"
 
-chrome.runtime.onInstalled.addListener(async function(details) {
+chrome.runtime.onInstalled.addListener(function() {
     fetchMarkData();
 })
 
@@ -49,7 +49,15 @@ chrome.tabs.onUpdated.addListener(async function callback(activeInfo, info) {
         await markAsVisited(tabs[0].id);
     }
     if (info.status === 'complete') {
-        changeLinkColor(tabs[0]);
+        await changeLinkColor(tabs[0]);
+        chrome.tabs.sendMessage(
+            tabs[0].id, 
+            { 
+                action: "start_mutation_observer",
+                tabId: tabs[0].id
+            }
+        )
+
     }
 });
 
@@ -95,7 +103,7 @@ function markAsVisited(atabId) {
     return chrome.action.setIcon({ path: "visited.png", tabId: atabId });
 }
 
-chrome.runtime.onMessage.addListener(async function(msg) {
+chrome.runtime.onMessage.addListener(async function(msg, sender, sendResponse) {
     if (msg.action === 'import') {
         var data = msg.data;
 
@@ -108,7 +116,16 @@ chrome.runtime.onMessage.addListener(async function(msg) {
                 }
             }
         }
+    } else if (msg.action === 'get_visited') {
+        const visited = []
+        for(const link of msg.links) {
+            if (await markedAsRead(link)) {
+                visited.push(link)
+            }
+        }
+        sendResponse(visited)
     }
+    return true
 });
 
 async function removeUrl(url) {
