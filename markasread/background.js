@@ -116,16 +116,16 @@ chrome.runtime.onMessage.addListener(async function(msg, sender, sendResponse) {
                 }
             }
         }
-    } else if (msg.action === 'get_visited') {
+    } else if (msg.action === 'process_post_load_elements') {
         const visited = []
         for(const link of msg.links) {
             if (await markedAsRead(link)) {
                 visited.push(link)
             }
         }
-        sendResponse(visited)
+        chrome.tabs.sendMessage(sender.tab.id, {action: "change_link_color", links: visited, linkColor: "red"})
     }
-    return true
+    sendResponse()
 });
 
 async function removeUrl(url) {
