@@ -8,8 +8,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         changeLinkColor(message.links, linkElements, message.linkColor)
         sendResponse()
     } else if (message.action == "start_mutation_observer") {
-        // define what element should be observed by the observer
-        // and what types of mutations trigger the callback
         observer.observe(
             document, 
             {
