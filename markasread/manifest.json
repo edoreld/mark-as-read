@@ -42,7 +42,7 @@
     "content_scripts": [{
         "matches": ["*://*/*"],
         "js": [
-            "changeLinkColor.js"
+            "content-scripts/changeLinkColor.js"
         ]
       }],
     "options_page": "options.html"
