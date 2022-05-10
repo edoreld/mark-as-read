@@ -37,6 +37,7 @@ chrome.tabs.onActivated.addListener(async function callback() {
     } else {
         await markAsVisited(tabs[0].id);
     }
+    await changeLinkColor(tabs[0])
 });
 
 chrome.tabs.onUpdated.addListener(async function callback(activeInfo, info) {
