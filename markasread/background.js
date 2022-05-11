@@ -1,12 +1,4 @@
 chrome.runtime.onInstalled.addListener(function(details) {
-    if (details.reason == "update") {
-        chrome.storage.sync.get("visited", function(result) {
-            if (result["visited"] !== undefined) {
-                visited = result["visited"];
-                updateDictionary(visited);
-            }
-        })
-    }
     fetchMarkData();
 })
 
