@@ -22,7 +22,9 @@ function changeLinkColor(linksToMatch, linkElementsToSearch, linkColor) {
     const linksSet = new Set(linksToMatch)
     linkElementsToSearch.forEach(linkElement => {
         if (linksSet.has(linkElement.href)) {
-            linkElement.querySelectorAll("*").forEach(a => a.style.color = linkColor)
+            linkElement.style.color = linkColor
+            // Occasionally the text is in the anchor element's children
+            linkElement.querySelectorAll("*").forEach(el => el.style.color = linkColor)
         }
     })
 }
