@@ -3,10 +3,12 @@
     "name": "Mark As Read",
     "version": "1.0.1",
     "description": "Mark a page as read by clicking on the extension icon. ",
-    "icons": {
-        "16": "icon_16.png",
-        "48": "icon_48.png",
-        "128": "icon_128.png"
+    "action": {
+        "default_icon": { 
+            "128": "icon_128.png",
+            "48": "icon_48.png",
+            "16": "icon_16.png"
+        }
     },
     "background": {
         "service_worker": "background.js"
