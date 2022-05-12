@@ -1,17 +1,16 @@
 {
-    "manifest_version": 3,
+    "manifest_version": 2,
     "name": "Mark As Read",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "description": "Mark a page as read by clicking on the extension icon. ",
-    "action": {
-        "default_icon": { 
-            "128": "icon_128.png",
-            "48": "icon_48.png",
-            "16": "icon_16.png"
-        }
+    "icons": {
+        "128": "icon_128.png",
+        "48": "icon_48.png",
+        "16": "icon_16.png"
     },
+    "browser_action": {},
     "background": {
-        "service_worker": "background.js"
+        "scripts": ["background.js"]
     },
     "commands": {
         "mark_page": {
