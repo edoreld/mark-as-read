@@ -1,3 +1,5 @@
+![maintenance-status](https://img.shields.io/badge/maintenance-looking--for--maintainer-orange.svg)
+
 # Mark as Read
 
 Imagine every website was an item in a todo list. This extension allows you to tick those items off.
