@@ -16,34 +16,58 @@ Notice the new icon on the Chrome toolbar.
 
 ![Image of unchecked page](https://github.com/edoreld/mark-as-read/blob/master/markasread/notvisited.png?raw=true)
 
-When you tick it off, the item will look like the following:  
+Click it (or press <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>Z</kbd>) to tick the page off:
 
-![Image of checked page](https://github.com/edoreld/mark-as-read/blob/master/markasread/icon_128.png?raw=true)
+![Image of checked page](https://github.com/edoreld/mark-as-read/blob/master/markasread/visited.png?raw=true)
 
-The extension will remember the "tick off state" for each page you visit and will show you the right image when you come back.
-
-If you click on the extension icon, it will change from unchecked to checked or viceversa.
+The extension remembers which pages you ticked off and shows the right icon whenever you come back. Click again to untick.
 
 ## Features
 
-- Mark pages as read
-- Highlight visited text links
-- Import & Export visited links
+- Mark pages as read with a click or a keyboard shortcut
+- Variants of the same page count as one page: `page#section`, `page?utm_source=…` and `page` are all the same
+- Built-in rules for popular sites, e.g. a YouTube video opened at a timestamp is still the same video
+- Import & export your marked pages as JSON
+- Everything is stored locally in your browser; nothing is sent anywhere
 
-### Screenshots
+## Options
 
-<h4>Options</h4>
+Right-click the toolbar icon and choose **Options** to:
 
-<img src="screenshots/options.png?raw=true" width="404">
+- **Export / Import** a backup of your marked pages. Backups from older versions can be imported too.
+- **Clear** all marked pages.
+- Under **Advanced options**, edit which URL parameters are ignored when comparing pages. One rule per line:
 
-<h4>Visited Link highlighted as Blue</h4>
+  ```
+  # ignored on every site
+  utm_*, fbclid
+  # ignored on these sites only (and their subdomains)
+  youtube.com: t, index
+  x.com, twitter.com: s, t
+  ```
 
-<img src="screenshots/blue-link.png?raw=true" width="300">
+  A trailing `*` matches any parameter with that prefix. Saving merges marked pages that become identical under the new rules, which can't be undone, so export a backup first.
 
-<h4>Visited Link highlighted as Red</h4>
+## Development
 
-<img src="screenshots/red-link.png?raw=true" width="300">
+Requires Node.js 22.2 or newer.
 
-<h4>Visited Link highlighted as Pink</h4>
+```bash
+npm install
+npm run lint    # eslint
+npm test        # vitest
+npm run zip     # builds dist/mark-as-read-<version>.zip for the Chrome Web Store
+```
 
-<img src="screenshots/pink-link.png?raw=true" width="300">
+To try your changes, open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and select the `markasread` folder. After editing, click the reload button on the extension's card.
+
+Project layout:
+
+- `markasread/` — the extension itself (what gets zipped)
+  - `background.js` — service worker: toolbar icon, shortcut, messages from the options page
+  - `lib/store.js` — storage of marked pages, migrations, import/export
+  - `lib/url.js` — URL normalization and the ignored-parameter rules
+  - `options.*` — the options page
+- `tests/` — unit tests with a mocked `chrome` API
+- `scripts/zip.js` — packaging script
+- `docs/chrome-web-store.md` — store listing text and release checklist

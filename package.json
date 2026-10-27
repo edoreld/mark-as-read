@@ -1,7 +1,22 @@
 {
   "name": "mark-as-read",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=22.2"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "zip": "node scripts/zip.js",
+    "check": "npm run lint && npm test"
+  },
   "devDependencies": {
-    "@types/chrome": "^0.0.184",
-    "eslint": "^8.14.0"
+    "@eslint/js": "^9.39.5",
+    "@types/chrome": "^0.3.6",
+    "eslint": "^9.39.5",
+    "globals": "^17.13.0",
+    "vitest": "^5.0.5"
   }
 }
