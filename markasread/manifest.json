@@ -1,8 +1,9 @@
 {
     "manifest_version": 3,
     "name": "Mark As Read",
-    "version": "1.0.1",
-    "description": "Mark a page as read by clicking on the extension icon. ",
+    "version": "1.1.0",
+    "minimum_chrome_version": "102",
+    "description": "Mark a page as read by clicking on the extension icon.",
     "action": {
         "default_icon": "notvisited.png",
         "default_title": "Mark as read"
@@ -25,10 +26,12 @@
         "16": "icon_16.png"
     },
     "permissions": [
-        "activeTab",
         "tabs",
         "storage",
         "unlimitedStorage"
     ],
-    "options_page": "options.html"
+    "options_ui": {
+        "page": "options.html",
+        "open_in_tab": true
+    }
 }
