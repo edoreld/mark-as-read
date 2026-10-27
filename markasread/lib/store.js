@@ -7,7 +7,7 @@
 // clicks, keyboard shortcut, imports) can't interleave their read-modify-write
 // cycles and overwrite each other.
 
-const KEY = "visited";
+export const KEY = "visited";
 const SYNC_MIGRATED = "syncMigrated";
 export const VERSION = 2;
 
@@ -108,7 +108,7 @@ function addPath(visited, origin, path) {
     }
 }
 
-function isMarked(visited, url) {
+export function isMarked(visited, url) {
     if (!url) {
         return false;
     }
@@ -116,7 +116,7 @@ function isMarked(visited, url) {
     return Array.isArray(visited[origin]) && visited[origin].includes(path);
 }
 
-async function load() {
+export async function load() {
     const obj = await chrome.storage.local.get(KEY);
     const visited = obj[KEY];
     if (visited === undefined) {
