@@ -12,12 +12,39 @@
 			<button id="download">Export</button>
 			<button id="import">Import</button>
 			<input type="file" id="upload" hidden/>
-		</section>			
+		</section>
 		<section>
 			<h3>Clear</h3>
 			<p>WARNING! This will delete all stored data regarding sites you've visited!</p>
 			<button id="clear">Clear All Stored Data</button>
 		</section>
 		<p id="status" role="status"></p>
+		<details>
+			<summary>Advanced options</summary>
+			<section>
+				<h3>Ignored URL Parameters</h3>
+				<p>
+					Some parts of a web address don't change the page, like a video's start
+					time or a tag saying which site sent you. Pages that differ only in these
+					parts count as the same page. The defaults already cover common tracking
+					tags and popular sites, so most people never need to change this.
+				</p>
+				<p>
+					One rule per line: a comma-separated list of parameter names, optionally
+					preceded by one or more domains and a colon to apply it to those sites
+					only. A trailing * matches any parameter with that prefix. Lines starting
+					with # are comments.
+				</p>
+				<p>
+					Saving merges marked pages that become identical under the new rules.
+					This can't be undone by removing a rule later, so export a backup first.
+				</p>
+				<textarea id="ignored-params" rows="20" cols="80" wrap="off" spellcheck="false"></textarea>
+				<br />
+				<button id="save-params">Save</button>
+				<button id="reset-params">Restore Defaults</button>
+				<p id="params-status" role="status"></p>
+			</section>
+		</details>
 	</body>
 </html>

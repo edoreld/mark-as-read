@@ -1,4 +1,4 @@
-import { clearData, importData, isMarked, KEY, load, migrate, toggleUrl } from "./lib/store.js";
+import { clearData, getMatcher, importData, KEY, migrate, saveIgnoredParams, toggleUrl } from "./lib/store.js";
 
 chrome.runtime.onInstalled.addListener(async function() {
     await migrate();
@@ -55,12 +55,13 @@ async function updateIcon(tab) {
     if (!tab) {
         return;
     }
-    await setIcon(tab.id, isMarked(await load(), tab.url));
+    const isMarked = await getMatcher();
+    await setIcon(tab.id, isMarked(tab.url));
 }
 
 async function refreshAllTabs() {
-    const [visited, tabs] = await Promise.all([load(), chrome.tabs.query({})]);
-    await Promise.all(tabs.map(tab => setIcon(tab.id, isMarked(visited, tab.url))));
+    const [isMarked, tabs] = await Promise.all([getMatcher(), chrome.tabs.query({})]);
+    await Promise.all(tabs.map(tab => setIcon(tab.id, isMarked(tab.url))));
 }
 
 async function setIcon(tabId, marked) {
@@ -77,6 +78,8 @@ chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
         task = importData(msg.data);
     } else if (msg.action === 'clear') {
         task = clearData();
+    } else if (msg.action === 'saveIgnoredParams') {
+        task = saveIgnoredParams(msg.text);
     } else {
         return false;
     }
