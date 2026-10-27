@@ -1,4 +1,5 @@
-import { countUrls, normalizeData } from "./lib/store.js";
+import { countUrls, getIgnoredParams, normalizeData } from "./lib/store.js";
+import { DEFAULT_IGNORED_PARAMS, parseRules } from "./lib/url.js";
 
 async function download() {
     const obj = await chrome.storage.local.get("visited");
@@ -58,15 +59,41 @@ async function clearData() {
     }
 }
 
-function showStatus(text, isError = false) {
-    const status = document.getElementById("status");
+async function saveParams() {
+    const text = document.getElementById("ignored-params").value;
+    const { errors } = parseRules(text);
+    if (errors.length) {
+        showStatus(errors.join(" "), true, "params-status");
+        return;
+    }
+    const response = await chrome.runtime.sendMessage({ action: 'saveIgnoredParams', text: text });
+    if (!response?.ok) {
+        showStatus(`Save failed: ${response?.error ?? "unknown error"}`, true, "params-status");
+        return;
+    }
+    const { merged } = response.result;
+    showStatus(merged
+        ? `Saved. ${merged} marked URLs were duplicates under the new rules and were merged.`
+        : "Saved.", false, "params-status");
+}
+
+function resetParams() {
+    document.getElementById("ignored-params").value = DEFAULT_IGNORED_PARAMS;
+    return saveParams();
+}
+
+function showStatus(text, isError = false, id = "status") {
+    const status = document.getElementById(id);
     status.textContent = text;
     status.classList.toggle("error", isError);
 }
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     document.getElementById("download").addEventListener("click", download);
     document.getElementById('upload').addEventListener("change", upload, false);
     document.getElementById("import").addEventListener('click', openDialog);
     document.getElementById("clear").addEventListener('click', clearData)
+    document.getElementById("save-params").addEventListener('click', saveParams);
+    document.getElementById("reset-params").addEventListener('click', resetParams);
+    document.getElementById("ignored-params").value = await getIgnoredParams();
 }, false);

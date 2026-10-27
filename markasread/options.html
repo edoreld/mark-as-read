@@ -8,6 +8,22 @@
 	<body>
 		<h1>Mark As Read</h1>
 		<section>
+			<h3>Ignored URL Parameters</h3>
+			<p>
+				Pages that differ only in these query parameters, or in their #section,
+				count as the same page. One rule per line: a comma-separated list of
+				parameter names, optionally starting with a domain to apply it to that
+				site only. A trailing * matches any parameter with that prefix.
+			</p>
+			<pre>utm_*, fbclid
+youtube.com: t, index, list</pre>
+			<textarea id="ignored-params" rows="8" cols="60" spellcheck="false"></textarea>
+			<br />
+			<button id="save-params">Save</button>
+			<button id="reset-params">Restore Defaults</button>
+			<p id="params-status" role="status"></p>
+		</section>
+		<section>
 			<h3>Backup</h3>
 			<button id="download">Export</button>
 			<button id="import">Import</button>
