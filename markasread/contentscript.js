@@ -1,1 +1,0 @@
-chrome.storage.local.clear();

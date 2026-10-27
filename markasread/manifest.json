@@ -11,7 +11,8 @@
         }
     },
     "background": {
-        "service_worker": "background.js"
+        "service_worker": "background.js",
+        "type": "module"
     },
     "commands": {
         "mark_page": {
@@ -30,7 +31,6 @@
         "activeTab",
         "tabs",
         "storage",
-        "downloads",
         "unlimitedStorage"
     ],
     "options_page": "options.html"
