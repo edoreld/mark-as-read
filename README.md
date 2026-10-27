@@ -1,5 +1,3 @@
-![maintenance-status](https://img.shields.io/badge/maintenance-looking--for--maintainer-orange.svg)
-
 # Mark as Read
 
 Imagine every website was an item in a todo list. This extension allows you to tick those items off.
@@ -47,27 +45,3 @@ Right-click the toolbar icon and choose **Options** to:
   ```
 
   A trailing `*` matches any parameter with that prefix. Saving merges marked pages that become identical under the new rules, which can't be undone, so export a backup first.
-
-## Development
-
-Requires Node.js 22.2 or newer.
-
-```bash
-npm install
-npm run lint    # eslint
-npm test        # vitest
-npm run zip     # builds dist/mark-as-read-<version>.zip for the Chrome Web Store
-```
-
-To try your changes, open `chrome://extensions`, turn on **Developer mode**, click **Load unpacked** and select the `markasread` folder. After editing, click the reload button on the extension's card.
-
-Project layout:
-
-- `markasread/` — the extension itself (what gets zipped)
-  - `background.js` — service worker: toolbar icon, shortcut, messages from the options page
-  - `lib/store.js` — storage of marked pages, migrations, import/export
-  - `lib/url.js` — URL normalization and the ignored-parameter rules
-  - `options.*` — the options page
-- `tests/` — unit tests with a mocked `chrome` API
-- `scripts/zip.js` — packaging script
-- `docs/chrome-web-store.md` — store listing text and release checklist
