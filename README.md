@@ -36,7 +36,8 @@ Right-click the toolbar icon and choose **Options** to:
 - **Clear** all marked pages.
 - Under **Advanced options**, edit which URL parameters are ignored when comparing pages. One rule per line. Default options:
   
-  ```
+```
+  
 # Tracking parameters, ignored on every site
 utm_*, fbclid, gclid, dclid, gbraid, wbraid, msclkid, yclid, twclid, igshid
 mc_cid, mc_eid, _hsenc, _hsmi, mkt_tok
@@ -55,6 +56,7 @@ linkedin.com: trk, trkInfo, trackingId, refId, lipi, midToken, midSig, trkEmail,
 tiktok.com: is_from_webapp, sender_device, _r, _t, share_app_id, share_item_id, share_link_id
 spotify.com: si, nd
 medium.com: source
-  ```
+
+```
 
   A trailing `*` matches any parameter with that prefix. Saving merges marked pages that become identical under the new rules, which can't be undone, so export a backup first.
