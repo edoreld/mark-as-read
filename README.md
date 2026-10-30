@@ -35,6 +35,7 @@ Right-click the toolbar icon and choose **Options** to:
 - **Export / Import** a backup of your marked pages. Backups from older versions can be imported too.
 - **Clear** all marked pages.
 - Under **Advanced options**, edit which URL parameters are ignored when comparing pages. One rule per line. Default options:
+  
   ```
 # Tracking parameters, ignored on every site
 utm_*, fbclid, gclid, dclid, gbraid, wbraid, msclkid, yclid, twclid, igshid
